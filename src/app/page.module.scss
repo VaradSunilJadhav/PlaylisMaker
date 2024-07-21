@@ -1,0 +1,18 @@
+.page{
+  .allCards{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem 1rem;
+    padding-top: 1rem;
+  }
+
+  .filterButton{
+    display: flex;
+    position: fixed;
+    width: 100%;
+    justify-content: end;
+    height: 2rem;
+    bottom: 2rem;
+  }
+}

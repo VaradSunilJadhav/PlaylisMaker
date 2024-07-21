@@ -1,95 +1,53 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client"
+import Card from "@/components/Card/card";
+import styles from './page.module.scss'
+import Navbar from "@/components/Navbar/navbar";
+import { useState } from "react";
+import styles2 from "@/components/Navbar/navbar.module.scss"
+
+type Item = {
+  id: Number;
+  songName: string;
+  artists: string;
+  duration: string;
+};
 
 export default function Home() {
+  const [songsList, SetsongsList] = useState<Item[]>([])
+  const [currId, setcurrId] = useState(0)
+  const addSong = (data: { songName: string; artists: string; duration: string }) => {
+    const dict: Item = {
+      id: currId,
+      songName: data.songName,
+      artists: data.artists,
+      duration: data.duration,
+    }
+    setcurrId(currId + 1)
+    SetsongsList([...songsList, dict])
+  }
+
+  const deleteSong = (data: { id: string }) => {
+    const songId = parseInt(data.id, 10);
+    SetsongsList(songsList.filter(song => song.id !== songId));
+  };
+
+  const sortSongs = () => {
+    SetsongsList(songsList.slice().sort((a, b) => a.songName.localeCompare(b.songName)));
+  }
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
+    <>
+      <div className={styles.page}>
+        <Navbar onButtonClick={addSong} />
+        <div className={styles.allCards}>
+          {songsList.map((song) => (
+            <Card songData={song} onDeleteButtonClick={deleteSong} />
+          ))}
+        </div>
+        <div className={styles.filterButton}>
+          <button className={styles2.createButton} onClick={sortSongs}>Sort acc. to Song Names</button>
         </div>
       </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
+    </>
   );
 }
